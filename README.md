@@ -1,7 +1,7 @@
 json-bignum
 ===========
 
-Node.js JSON replacement which handles 64-bit integers and arbitrary-precision decimals. It is a modified version of [Douglas Crockford's JSON library](https://github.com/douglascrockford/JSON-js). Although it can handle 64-bit integers and arbitrary-precision decimals, it is slower than the built-in JSON functions. It uses [BigDecimal.js](https://github.com/iriscouch/bigdecimal.js) to handle big integers and decimals which is a literal port of Java's ```BigInteger``` and ```BigDecimal``` classes.
+Node.js JSON replacement which handles 64-bit integers and arbitrary-precision decimals. It is a modified version of [Douglas Crockford's JSON library](https://github.com/douglascrockford/JSON-js). Although it can handle 64-bit integers and arbitrary-precision decimals, it is slower than the built-in JSON functions.
 
 ## Install
 
