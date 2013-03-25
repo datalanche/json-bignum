@@ -23,25 +23,47 @@ var obj = bignumJSON.parse('{ "decimal": -9223372036854775807.423748237498325329
 var bignumJSON = require('json-bignum');
 
 var obj = {
-    bigint: new bignumJSON.BigInt('92233720368547758074237482374983253298159'),
-    decimal: new bignumJSON.Decimal('-9223372036854775807.4237482374983253298159'),
+    bigint: new bignumJSON.BigNumber('92233720368547758074237482374983253298159'),
+    decimal: new bignumJSON.BigNumber('-9223372036854775807.4237482374983253298159'),
 };
 
 console.log(bignumJSON.stringify(obj));
 ```
 
+### BigNumber
+
+The ```BigNumber``` class simply stores the number as a string. It does not support arithmetic, but if you need that here are some excellent libraries.
+
+* [BigDecimal.js](https://github.com/iriscouch/bigdecimal.js): a literal port of Java's ```BigInteger``` and ```BigDecimal``` classes.
+* [bigint](https://github.com/substack/node-bigint): Big integer arithmetic using GMP.
+* [bignum](https://github.com/justmoon/node-bignum): Big integer arithmetic using OpenSSL.
+
+```js
+// example using BigDecimal.js
+
+var bignumJSON = require('json-bignum');
+var bigdecimal = require('bigdecimal');
+
+var jsonStr = '{"normal":-922337203.234,"big":-9223372036854775807.4237482374983253298159}';
+var jsonObj = bignumJSON.parse(jsonStr);
+
+var a = new bigdecimal.BigDecimal(jsonObj.normal.toString());
+var b = new bigdecimal.BigDecimal(jsonObj.big.toString());
+var sum = a.add(b);
+```
+
 ## Caveats
 
-It is not recommended to mix calls to ```JSON``` and ```bignumJSON```. For example, ```JSON.stringify()``` does not know how to parse ```BigInt``` and ```Decimal```.
+It is not recommended to mix calls to ```JSON``` and ```bignumJSON```. For example, ```JSON.stringify()``` does not know how to parse ```BigNumber```.
 
 ## Benchmark
 
 Below shows the result of the benchmark on my machine.
 
     $ node benchmark.js
-    $ 10000 calls of JSON.parse():                                   26.236455 ms
-    $ 10000 calls of JSON.stringify():                               20.933563 ms
-    $ 10000 calls of bignumJSON.parse() with bignums in JSON:        3282.439873 ms
-    $ 10000 calls of bignumJSON.parse() without bignums in JSON:     139.789558 ms
-    $ 10000 calls of bignumJSON.stringify() with bignums in JSON:    259.762923 ms
-    $ 10000 calls of bignumJSON.stringify() without bignums in JSON: 71.07643 ms
+    $ 10000 calls of JSON.parse():                                   26.746847 ms
+    $ 10000 calls of JSON.stringify():                               20.824071 ms
+    $ 10000 calls of bignumJSON.parse() with bignums in JSON:        221.945307 ms
+    $ 10000 calls of bignumJSON.parse() without bignums in JSON:     150.626292 ms
+    $ 10000 calls of bignumJSON.stringify() with bignums in JSON:    64.166056 ms
+    $ 10000 calls of bignumJSON.stringify() without bignums in JSON: 61.860016 ms
