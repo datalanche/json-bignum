@@ -50,6 +50,10 @@ var jsonObj = bignumJSON.parse(jsonStr);
 var a = new bigdecimal.BigDecimal(jsonObj.normal.toString());
 var b = new bigdecimal.BigDecimal(jsonObj.big.toString());
 var sum = a.add(b);
+
+jsonObj.sum = new bignumJSON.BigNumber(sum.toString());
+
+console.log(bignumJSON.stringify(jsonObj));
 ```
 
 ## Caveats
@@ -61,9 +65,9 @@ It is not recommended to mix calls to ```JSON``` and ```bignumJSON```. For examp
 Below shows the result of the benchmark on my machine.
 
     $ node benchmark.js
-    $ 10000 calls of JSON.parse():                                   26.746847 ms
-    $ 10000 calls of JSON.stringify():                               20.824071 ms
-    $ 10000 calls of bignumJSON.parse() with bignums in JSON:        221.945307 ms
-    $ 10000 calls of bignumJSON.parse() without bignums in JSON:     150.626292 ms
-    $ 10000 calls of bignumJSON.stringify() with bignums in JSON:    64.166056 ms
-    $ 10000 calls of bignumJSON.stringify() without bignums in JSON: 61.860016 ms
+    10000 calls of JSON.parse():                                   26.746847 ms
+    10000 calls of JSON.stringify():                               20.824071 ms
+    10000 calls of bignumJSON.parse() with bignums in JSON:        221.945307 ms
+    10000 calls of bignumJSON.parse() without bignums in JSON:     150.626292 ms
+    10000 calls of bignumJSON.stringify() with bignums in JSON:    64.166056 ms
+    10000 calls of bignumJSON.stringify() without bignums in JSON: 61.860016 ms
