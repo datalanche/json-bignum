@@ -6,7 +6,7 @@
     "name": "json-bignum",
     "homepage": "https://github.com/datalanche/json-bignum",
     "description": "Node.js JSON replacement which handles 64-bit integers and arbitrary-precision decimals.",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "repository": {
         "type": "git",
         "url": "https://github.com/datalanche/json-bignum.git"
@@ -23,8 +23,5 @@
     ],
     "engines": {
         "node": ">=0.8"
-    },
-    "dependencies": {
-        "bigdecimal": "0.6.1"
     }
 }
