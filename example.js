@@ -9,3 +9,23 @@ var testInteger = '{"normal":-922337203,"big":-922337203685477580742374823749832
 console.log('\ntestInteger:                   ' + testInteger);
 console.log('JSON.parse(testInteger):       ' + JSON.stringify(JSON.parse(testInteger)));
 console.log('bignumJSON.parse(testInteger): ' + bignumJSON.stringify(bignumJSON.parse(testInteger)));
+
+var testBogusInt = '{"hello":8.}'
+console.log('\ntestBogusInt:                  ' + testBogusInt);
+
+var s;
+try {
+  s = JSON.stringify(JSON.parse(testBogusInt));
+} catch (e) {
+  console.log(e);
+  s = e.toString();
+}
+console.log('JSON.parse(testBogusInt):       ' +  s);
+
+try {
+  s = bignumJSON.stringify(bignumJSON.parse(testBogusInt, undefined, true, true));
+} catch (e) {
+  console.log(e);
+  s = e.toString();
+}
+console.log('bignumJSON.parse(testBogusInt): ' + s);
