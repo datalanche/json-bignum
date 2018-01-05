@@ -1,20 +1,10 @@
 var bignumJSON = require('./lib');
 
-var iterations = 10000;
-var bignumJsonStr = '{ \
-    "bigint": 92233720368547758074237, \
-    "decimal": -9223372036854775807.4237482374983253298159, \
-    "string": "hello world", \
-    "boolean": true, \
-    "array": [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ], \
-    "object": { \
-        "int": 15, \
-        "float": 15.56 \
-    } \
-}';
+var NUM_CALLS = 10000;
+var NUM_TRIALS = 10;
 var jsonStr = '{ \
-    "int": 9223372, \
-    "float": -0.4237482, \
+    "bigint": 92233720368547758074237, \
+    "bigdecimal": -9223372036854775807.4237482374983253298159, \
     "string": "hello world", \
     "boolean": true, \
     "array": [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ], \
@@ -24,80 +14,50 @@ var jsonStr = '{ \
     } \
 }';
 
+function runTest(func, input) {
+
+    var total = 0;
+
+    for (var i = 0; i < NUM_TRIALS; i++) {
+
+        var startTime = process.hrtime();
+
+        for (var j = 0; j < NUM_CALLS; j++) {
+            func(input);
+        }
+
+        var duration = process.hrtime(startTime);
+        duration = (duration[0] * 1e9 + duration[1]) / 1e3 / NUM_CALLS;
+
+        total += duration;
+    }
+
+    return (total / NUM_TRIALS);
+}
+
 // dont count first call
-var jsonObj = JSON.parse(bignumJsonStr);
-var bignumObj = bignumJSON.parse(bignumJsonStr);
+var jsonObj = JSON.parse(jsonStr);
+var bignumObj = bignumJSON.parse(jsonStr);
 JSON.stringify(jsonObj);
 bignumJSON.stringify(bignumObj);
 
-// test JSON.parse
+console.log('\n==========================================================');
+console.log('  Time is averaged over ' + NUM_TRIALS + ' trials where the function');
+console.log('  is called ' + NUM_CALLS + ' times.');
+console.log('==========================================================\n');
 
-var startTime = process.hrtime();
+var duration = runTest(JSON.parse, jsonStr);
+console.log('JSON.parse():              ' + duration.toString() + ' microseconds/call');
 
-for (var i = 0; i < iterations; i++) {
-    JSON.parse(bignumJsonStr);
-}
+duration = runTest(bignumJSON.parse, jsonStr);
+console.log('bignumJSON.parse():        ' + duration.toString() + ' microseconds/call');
 
-var diffTime = process.hrtime(startTime);
-diffTime = (diffTime[0] * 1e9 + diffTime[1]) / 1e6;
-console.log(iterations + ' calls of JSON.parse():                                   ' + diffTime.toString() + ' ms');
+console.log();
 
-// test JSON.stringify
+duration = runTest(JSON.stringify, jsonObj);
+console.log('JSON.stringify():          ' + duration.toString() + ' microseconds/call');
 
-startTime = process.hrtime();
+duration = runTest(bignumJSON.stringify, bignumObj);
+console.log('bignumJSON.stringify():    ' + duration.toString() + ' microseconds/call');
 
-for (var i = 0; i < iterations; i++) {
-    JSON.stringify(jsonObj);
-}
-
-diffTime = process.hrtime(startTime);
-diffTime = (diffTime[0] * 1e9 + diffTime[1]) / 1e6;
-console.log(iterations + ' calls of JSON.stringify():                               ' + diffTime.toString() + ' ms');
-
-// test bignumJSON.parse with bignums
-
-startTime = process.hrtime();
-
-for (var i = 0; i < iterations; i++) {
-    bignumJSON.parse(bignumJsonStr);
-}
-
-diffTime = process.hrtime(startTime);
-diffTime = (diffTime[0] * 1e9 + diffTime[1]) / 1e6;
-console.log(iterations + ' calls of bignumJSON.parse() with bignums in JSON:        ' + diffTime.toString() + ' ms');
-
-// test bignumJSON.parse without bignums
-
-startTime = process.hrtime();
-
-for (var i = 0; i < iterations; i++) {
-    bignumJSON.parse(jsonStr);
-}
-
-diffTime = process.hrtime(startTime);
-diffTime = (diffTime[0] * 1e9 + diffTime[1]) / 1e6;
-console.log(iterations + ' calls of bignumJSON.parse() without bignums in JSON:     ' + diffTime.toString() + ' ms');
-
-// test bignumJSON.stringify with bignums
-
-startTime = process.hrtime();
-
-for (var i = 0; i < iterations; i++) {
-    bignumJSON.stringify(bignumObj);
-}
-
-diffTime = process.hrtime(startTime);
-diffTime = (diffTime[0] * 1e9 + diffTime[1]) / 1e6;
-console.log(iterations + ' calls of bignumJSON.stringify() with bignums in JSON:    ' + diffTime.toString() + ' ms');
-
-// test bignumJSON.stringify without bignums
-
-startTime = process.hrtime();
-
-for (var i = 0; i < iterations; i++) {
-    bignumJSON.stringify(jsonObj);
-}
-
-diffTime = process.hrtime(startTime);
-diffTime = (diffTime[0] * 1e9 + diffTime[1]) / 1e6;
-console.log(iterations + ' calls of bignumJSON.stringify() without bignums in JSON: ' + diffTime.toString() + ' ms');
+console.log();
